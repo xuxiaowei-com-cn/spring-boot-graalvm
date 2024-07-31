@@ -30,3 +30,37 @@ build:
       - .m2/repository
   rules:
     - if: $MVN_BUILD == "true"
+
+build-graalvm-22:
+  stage: build
+  image: registry.cn-qingdao.aliyuncs.com/xuxiaoweicomcn/graalvm:22.0.2
+  variables:
+    MAVEN_OPTS: >-
+      -Dhttps.protocols=TLSv1.2
+      -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository
+      -Dorg.slf4j.simpleLogger.showDateTime=true
+      -Djava.awt.headless=true
+    MAVEN_CLI_OPTS: >-
+      --batch-mode
+      --errors
+      --fail-at-end
+      --show-version
+      --no-transfer-progress
+      -DinstallAtEnd=true
+      -DdeployAtEnd=true
+
+    SETTINGS_XML_PATH: settings.xml
+    LANG: C.UTF-8
+  script:
+    - echo $SETTINGS_XML_PATH
+    - ls -lh
+    - chmod +x ./mvnw
+    - ls -lh
+    - ./mvnw -V clean -Pnative native:compile -s $SETTINGS_XML_PATH
+    - ls -lh target
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - .m2/repository
+  rules:
+    - if: $GRAALVM_22_BUILD == "true"
