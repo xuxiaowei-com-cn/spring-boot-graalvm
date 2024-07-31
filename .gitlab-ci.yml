@@ -23,7 +23,7 @@ build:
   script:
     - echo $SETTINGS_XML_PATH
     - mvn -V clean package -s $SETTINGS_XML_PATH
-    - ls -l target
+    - ls -lh target
   cache:
     key: "${CI_JOB_NAME}"
     paths:
